@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Ipo Companies</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Rank</th>
+      <th>Price</th>
+      <th>Listed at</th>
+      <th>Apply from</th>
+      <th>Apply to</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ipo_companies.each do |ipo_company| %>
+      <tr>
+        <td><%= ipo_company.code %></td>
+        <td><%= ipo_company.name %></td>
+        <td><%= ipo_company.rank %></td>
+        <td><%= ipo_company.price %></td>
+        <td><%= ipo_company.listed_at %></td>
+        <td><%= ipo_company.apply_from %></td>
+        <td><%= ipo_company.apply_to %></td>
+        <td><%= link_to 'Show', ipo_company %></td>
+        <td><%= link_to 'Edit', edit_ipo_company_path(ipo_company) %></td>
+        <td><%= link_to 'Destroy', ipo_company, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Ipo Company', new_ipo_company_path %>

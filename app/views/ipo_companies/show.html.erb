@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Code:</strong>
+  <%= @ipo_company.code %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @ipo_company.name %>
+</p>
+
+<p>
+  <strong>Rank:</strong>
+  <%= @ipo_company.rank %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @ipo_company.price %>
+</p>
+
+<p>
+  <strong>Listed at:</strong>
+  <%= @ipo_company.listed_at %>
+</p>
+
+<p>
+  <strong>Apply from:</strong>
+  <%= @ipo_company.apply_from %>
+</p>
+
+<p>
+  <strong>Apply to:</strong>
+  <%= @ipo_company.apply_to %>
+</p>
+
+<%= link_to 'Edit', edit_ipo_company_path(@ipo_company) %> |
+<%= link_to 'Back', ipo_companies_path %>

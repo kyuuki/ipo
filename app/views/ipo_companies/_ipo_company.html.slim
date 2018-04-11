@@ -1,0 +1,16 @@
+tr
+  td = ipo_company.code
+  td = ipo_company.name
+  td = ipo_company.rank
+  td = ipo_company.price
+  td = ipo_company.listed_at
+  td = ipo_company.apply_from
+  td = ipo_company.apply_to
+  td
+    - ipo_company.handlings.each do |handling|
+      = handling.stock_company.name
+      br
+  / td = link_to '詳細', ipo_company
+  / td = link_to '編集', edit_ipo_company_path(ipo_company)
+  / td = link_to '削除', ipo_company, method: :delete, data: { confirm: 'Are you sure?' }
+

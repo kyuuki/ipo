@@ -1,0 +1,52 @@
+<%= form_with(model: ipo_company, local: true) do |form| %>
+  <% if ipo_company.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(ipo_company.errors.count, "error") %> prohibited this ipo_company from being saved:</h2>
+
+      <ul>
+      <% ipo_company.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :code %>
+    <%= form.text_field :code, id: :ipo_company_code %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, id: :ipo_company_name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :rank %>
+    <%= form.text_field :rank, id: :ipo_company_rank %>
+  </div>
+
+  <div class="field">
+    <%= form.label :price %>
+    <%= form.number_field :price, id: :ipo_company_price %>
+  </div>
+
+  <div class="field">
+    <%= form.label :listed_at %>
+    <%= form.date_select :listed_at, id: :ipo_company_listed_at %>
+  </div>
+
+  <div class="field">
+    <%= form.label :apply_from %>
+    <%= form.date_select :apply_from, id: :ipo_company_apply_from %>
+  </div>
+
+  <div class="field">
+    <%= form.label :apply_to %>
+    <%= form.date_select :apply_to, id: :ipo_company_apply_to %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
