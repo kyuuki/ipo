@@ -1,0 +1,21 @@
+/ https://getbootstrap.com/docs/4.0/examples/navbars/
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  .container
+    = link_to ipo_companies_path, { class: "navbar-brand" } do
+      | IPO まとめ
+
+    button.navbar-toggler type="button" data-toggle="collapse" data-target="#navbarsExample07" aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation"
+      span.navbar-toggler-icon
+
+    .collapse.navbar-collapse id="navbarsExample07"
+      ul.navbar-nav.mr-auto
+        li.nav-item
+          a.nav-link href="#"
+            | 申込状況
+        li.nav-item
+          a.nav-link href="#"
+            | 口座登録
+
+      .justify-content-end.align-items-center
+        a.nav-link.btn.btn-sm.btn-outline-secondary href="#"
+          | ログアウト
