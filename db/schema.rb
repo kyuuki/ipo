@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180411063748) do
+ActiveRecord::Schema.define(version: 20180411084855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "stock_company_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_company_id"], name: "index_accounts_on_stock_company_id"
+    t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
 
   create_table "handlings", force: :cascade do |t|
     t.bigint "ipo_company_id"
@@ -59,6 +69,8 @@ ActiveRecord::Schema.define(version: 20180411063748) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "accounts", "stock_companies"
+  add_foreign_key "accounts", "users"
   add_foreign_key "handlings", "ipo_companies"
   add_foreign_key "handlings", "stock_companies"
 end

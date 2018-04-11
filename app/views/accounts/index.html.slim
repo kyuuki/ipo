@@ -1,0 +1,22 @@
+h2 口座一覧
+
+.row
+  table.table
+    thead
+      tr
+        th 口座名
+        th 証券会社
+        th
+        th
+        th
+
+    tbody
+      - @accounts.each do |account|
+        tr
+          td = account.name
+          td = account.stock_company.name
+          td = link_to 'Show', account
+          td = link_to 'Edit', edit_account_path(account)
+          td = link_to 'Destroy', account, data: { confirm: 'Are you sure?' }, method: :delete
+
+  = link_to 'New Account', new_account_path

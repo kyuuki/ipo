@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :accounts
   root to: "ipo_companies#index"
 
   devise_for :users
