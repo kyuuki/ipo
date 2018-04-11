@@ -36,5 +36,10 @@ namespace :scraping do
       end
     end
   end
+
+  desc "Scraping get"
+  task :get_data_2 => :environment do
+    ipo_list = IpoCompany::get_data_2
+  end
 end
 
