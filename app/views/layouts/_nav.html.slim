@@ -17,5 +17,12 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
             | 口座登録
 
       .justify-content-end.align-items-center
-        a.nav-link.btn.btn-sm.btn-outline-secondary href="#"
-          | ログアウト
+        - if user_signed_in?
+          = link_to destroy_user_session_path, { class: "btn btn-sm btn-outline-secondary", method: :delete } do
+            | ログアウト
+        - else
+          = link_to new_user_registration_path, { class: "btn btn-sm btn-outline-secondary" } do
+            | ユーザー登録
+          | &nbsp;
+          = link_to new_user_session_path, { class: "btn btn-sm btn-outline-secondary" } do
+            | ログイン
