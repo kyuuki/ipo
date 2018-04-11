@@ -4,7 +4,7 @@ class ApplicationsController < ApplicationController
   # GET /applications
   # GET /applications.json
   def index
-    @applications = Application.all
+    #@applications = Application.all
   end
 
   # GET /applications/1
@@ -28,7 +28,8 @@ class ApplicationsController < ApplicationController
 
     respond_to do |format|
       if @application.save
-        format.html { redirect_to @application, notice: 'Application was successfully created.' }
+        flash.now[:notice] = 'Application was successfully created.'
+        format.html { render :edit }
         format.json { render :show, status: :created, location: @application }
       else
         format.html { render :new }
@@ -42,7 +43,9 @@ class ApplicationsController < ApplicationController
   def update
     respond_to do |format|
       if @application.update(application_params)
-        format.html { redirect_to @application, notice: 'Application was successfully updated.' }
+        # https://qiita.com/chobi9999/items/4552a14314b0314a04f3
+        flash.now[:notice] = 'Application was successfully updated.'
+        format.html { render :edit }
         format.json { render :show, status: :ok, location: @application }
       else
         format.html { render :edit }

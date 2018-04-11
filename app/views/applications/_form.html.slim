@@ -1,22 +1,33 @@
+- if @application.errors.any?
+  #error_explanation
+    h2 = "#{pluralize(@application.errors.count, "error")} prohibited this application from being saved:"
+    ul
+      - @application.errors.full_messages.each do |message|
+        li = message
+
 = form_for @application do |f|
-  - if @application.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@application.errors.count, "error")} prohibited this application from being saved:"
-      ul
-        - @application.errors.full_messages.each do |message|
-          li = message
 
-  .field
-    = f.label :ipo_company
-    = f.text_field :ipo_company
-  .field
-    = f.label :account
-    = f.text_field :account
-  .field
-    = f.label :amount
-    = f.number_field :amount
-  .field
-    = f.label :applied
-    = f.check_box :applied
+  .card
+    .card-body
+      .form-group.row
+        = f.label :ipo_company, "IPO", { class: "col-sm-2 col-form-label" }
+        .col-sm-5
+          .form-control
+            = @application.ipo_company.name
 
-  .actions = f.submit
+      .form-group.row
+        = f.label :ipo_company, "株数", { class: "col-sm-2 col-form-label" }
+        .col-sm-5
+          = f.number_field :amount, { class: "form-control" }
+
+      .form-group.row
+        .col-sm-2
+        .col-sm-10
+          .form-check
+            = f.check_box :applied, { class: "form-check-input", id: "applied-check" }
+            = f.label :applied, "申込済", { class: "form-check-label", for: "applied-check"  }
+
+      .form-group.row
+        .col-sm-2
+        .col-sm-10
+          .actions = f.submit
