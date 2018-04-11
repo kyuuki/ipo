@@ -8,8 +8,16 @@ tr
   td = ipo_company.apply_to
   td
     - ipo_company.handlings.each do |handling|
-      = handling.stock_company.name
-      br
+      span.badge.badge-primary = handling.stock_company.name
+      | &nbsp;
+  td
+    - Application.where(user: current_user, ipo_company: ipo_company).each do |application|
+      - if application.applied
+        = link_to application.account.name, edit_application_path(application), { class: "badge badge-success" }
+      - else
+        = link_to application.account.name, edit_application_path(application), { class: "badge badge-danger" }
+      | &nbsp;
+
   / td = link_to '詳細', ipo_company
   / td = link_to '編集', edit_ipo_company_path(ipo_company)
   / td = link_to '削除', ipo_company, method: :delete, data: { confirm: 'Are you sure?' }

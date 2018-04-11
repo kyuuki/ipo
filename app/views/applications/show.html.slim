@@ -1,0 +1,21 @@
+p#notice = notice
+
+p
+  strong User:
+  = @application.user
+p
+  strong Ipo company:
+  = @application.ipo_company
+p
+  strong Account:
+  = @application.account
+p
+  strong Amount:
+  = @application.amount
+p
+  strong Applied:
+  = @application.applied
+
+=> link_to 'Edit', edit_application_path(@application)
+'|
+=< link_to 'Back', applications_path

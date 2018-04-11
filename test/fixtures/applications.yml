@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  ipo_company: one
+  account: one
+  amount: 1
+  applied: false
+
+two:
+  user: two
+  ipo_company: two
+  account: two
+  amount: 1
+  applied: false

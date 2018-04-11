@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180411084855) do
+ActiveRecord::Schema.define(version: 20180411091318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,19 @@ ActiveRecord::Schema.define(version: 20180411084855) do
     t.datetime "updated_at", null: false
     t.index ["stock_company_id"], name: "index_accounts_on_stock_company_id"
     t.index ["user_id"], name: "index_accounts_on_user_id"
+  end
+
+  create_table "applications", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "ipo_company_id"
+    t.bigint "account_id"
+    t.integer "amount"
+    t.boolean "applied"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_applications_on_account_id"
+    t.index ["ipo_company_id"], name: "index_applications_on_ipo_company_id"
+    t.index ["user_id"], name: "index_applications_on_user_id"
   end
 
   create_table "handlings", force: :cascade do |t|
@@ -71,6 +84,9 @@ ActiveRecord::Schema.define(version: 20180411084855) do
 
   add_foreign_key "accounts", "stock_companies"
   add_foreign_key "accounts", "users"
+  add_foreign_key "applications", "accounts"
+  add_foreign_key "applications", "ipo_companies"
+  add_foreign_key "applications", "users"
   add_foreign_key "handlings", "ipo_companies"
   add_foreign_key "handlings", "stock_companies"
 end

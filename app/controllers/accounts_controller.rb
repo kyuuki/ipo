@@ -29,6 +29,7 @@ class AccountsController < ApplicationController
 
     respond_to do |format|
       if @account.save
+        @account.update_applications(current_user)
         format.html { redirect_to @account, notice: 'Account was successfully created.' }
         format.json { render :show, status: :created, location: @account }
       else
@@ -43,6 +44,7 @@ class AccountsController < ApplicationController
   def update
     respond_to do |format|
       if @account.update(account_params)
+        @account.update_applications(current_user)
         format.html { redirect_to @account, notice: 'Account was successfully updated.' }
         format.json { render :show, status: :ok, location: @account }
       else
