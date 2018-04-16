@@ -2,7 +2,7 @@ tr
   td = ipo_company.code
   td = ipo_company.name
   td = ipo_company.rank
-  td = ipo_company.price
+  td.text-right = number_with_delimiter(ipo_company.price)
   td = ipo_company.listed_at
   td = ipo_company.apply_from
   td = ipo_company.apply_to

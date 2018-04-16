@@ -9,12 +9,13 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
 
     .collapse.navbar-collapse id="navbarsExample07"
       ul.navbar-nav.mr-auto
-        li.nav-item
-          a.nav-link href="#"
-            | 申込状況
-        li.nav-item
-          = link_to accounts_path, { class: "nav-link" } do
-            | 口座登録
+        - if user_signed_in?
+          li.nav-item
+            a.nav-link href="#"
+              | 申込状況
+          li.nav-item
+            = link_to accounts_path, { class: "nav-link" } do
+              | 口座登録
 
       .justify-content-end.align-items-center
         - if user_signed_in?
