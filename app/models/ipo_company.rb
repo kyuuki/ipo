@@ -4,136 +4,77 @@ require 'nokogiri'
 class IpoCompany < ApplicationRecord
   has_many :handlings
 
-  #
-  # 1 行処理
-  #
-  def self.parse_tr(tr)
-    ipo = IPO.new
+  # スクレイピングしてデータを更新 1
+  def self.update_1
+    # TODO: サービス化
+    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url, 
+                                   channel: "#random", username: "ipo-rails")
 
-    # 上場日カラム処理
-    ipo.date_listed = Date.parse(tr.xpath("td[1]").text)
+    ipo_data_list = IpoData::scrape_1(Rails.application.secrets.url_ipo_data_1)
 
-    # 企業名カラム処理
-    str = tr.xpath("td[2]").text
-    str = str.gsub(/\s+/, "")
-    str = str.tr("（）", "()")  # たまに全角ある。。。
-    ipo.company_name = str.gsub(/\((.+)\)/, "")
-    ipo.code = $1
+    ipo_data_list.each do |ipo|
+      ipo_company_list = IpoCompany.where(code: ipo.code)
+      ipo_company = nil
+      if ipo_company_list.size == 0
+        ipo_company = IpoCompany.create(
+          code: ipo.code,
+          name: ipo.company_name,
+          rank: ipo.rank,
+          price: ipo.price,
+          listed_at: ipo.date_listed,
+          apply_from: ipo.date_apply_from,
+          apply_to: ipo.date_apply_to)
+        #notifier.ping("IPO 案件が追加されました. #{ipo_company.name}")
+      else
+        # TODO: データがあるときはアップデート
+        ipo_company = ipo_company_list[0]
+      end
 
-    # 総合評価カラム処理
-    ipo.rank = tr.xpath("td[3]/img/@alt").text.tr('ａ-ｚＡ-Ｚ', 'a-zA-Z').upcase
+      ipo.companies.each do |c|
+        #stock_company_list = StockCompany.where(name: c)
+        # TODO: 部品化
+        stock_company = nil
+        StockCompany.all.each do |sc|
+          match = Regexp.new(sc.regexp).match(c)
+          if not match.nil?
+            stock_company = sc
+            break
+          end
+        end
 
-    # 申し込み期間カラム処理
-    str = tr.xpath("td[5]").text
-    str = str.gsub(/\s+/, "")
-    ipo.date_apply_from, ipo.date_apply_to = str.split("～").map { |s| Date.parse(s) }
+        if stock_company.nil?
+          puts "#{c} にマッチする証券会社がありません."
+          notifier.ping "#{c} にマッチする証券会社がありません."
+          #stock_company = StockCompany.create(name: c)
+        end
 
-    # 想定価格カラム処理
-    str = tr.xpath("td[7]").text
-    str = str.gsub(/,/, "")
-    str = str.gsub(/円/, "")
-    ipo.price = str.to_i
-
-    # 仮条件カラム処理
-
-    # 公募価格カラム処理
-    str = tr.xpath("td[9]").text
-    str = str.gsub(/,/, "")
-    str = str.gsub(/円/, "")
-    ipo.price = str.to_i if not str.to_i == 0
-
-    # 狙い目証券カラム処理
-    str = tr.xpath("td[12]").text
-    array_str = str.split(/\s+/)
-    ipo.companies = array_str.map { |s| s.gsub(/（.*）/, "") }
-
-    return ipo
+        # TODO: なくなっていても削除しない。追加のみ
+        handling = Handling.find_by(ipo_company: ipo_company, stock_company: stock_company)
+        if handling.nil?
+          Handling.create(ipo_company: ipo_company, stock_company: stock_company)
+        end
+      end
+    end
   end
 
-  def self.main
-    agent = Mechanize.new
-    page = agent.get(Rails.application.secrets[:url_ipo_data_1])
-    doc = Nokogiri::HTML(page.body)
-    # TODO: エラー処理
-
-    ipo_list = []
-    doc.xpath("//tr").each do |tr|
-      next if tr.xpath("th").size > 3
-      ipo_list << parse_tr(tr)
-    end
-
-    return ipo_list
-  end
-
-  # スクレイピング
-  def self.get_data_2
-    agent = Mechanize.new
-    page = agent.get(Rails.application.secrets[:url_ipo_data_2])
-    doc = Nokogiri::HTML(page.body)
-    # TODO: エラー処理
-
-    ipo_list = []
-    doc.xpath("//tr[@bgcolor='#ffffff']").each do |tr|
-      next if tr.xpath("th").size > 3
-      ipo_list << get_data_2_parse_tr(tr)
-    end
+  # スクレイピングしてデータを更新 2
+  def self.update_2
+    ipo_data_list = IpoData::scrape_2(Rails.application.secrets.url_ipo_data_2)
 
     # データ保存
-    ipo_list.each do |ipo|
+    ipo_data_list.each do |ipo|
       ipo_company = IpoCompany.find_by(code: ipo.code)
-      ipo_company = nil
       if ipo_company.nil?
-        IpoCompany.create(code: ipo.code, name: ipo.company_name, rank: ipo.rank)
+        ipo_company = IpoCompany.create(
+          code: ipo.code,
+          name: ipo.company_name,
+          rank: ipo.rank,
+          #price: ipo.price,
+          listed_at: ipo.date_listed,
+          apply_from: ipo.date_apply_from,
+          apply_to: ipo.date_apply_to)
       end
     end
   end
-
-  #
-  # 1 行処理
-  #
-  def self.get_data_2_parse_tr(tr)
-    ipo = IPO.new
-
-    # 上場日 BB 期間 カラム処理
-    ipo.date_listed = Date.parse(tr.xpath("td[1]").children[0].text)
-    ipo.date_apply_from, ipo.date_apply_to = tr.xpath("td[1]").children[2].text.split("-").map { |s| Date.parse(s) }
-
-    # コード IPO 銘柄名 カラム処理
-    ipo.code = tr.xpath("td[3]").children[0].text
-    ipo.company_name = tr.xpath("td[3]").children[2].text
-
-    # 想定価格 仮条件 カラム処理
-    #puts tr.xpath("td[4]").children[3].text
-    # TODO: HTML で解析した方が安全っぽい
-
-    # 評価 カラム処理
-    ipo.rank = tr.xpath("td[5]").text
-
-    return ipo
-  end
 end
 
-class IPO
-  attr_accessor :date_listed, :date_apply_from, :date_apply_to, :code, :company_name, :rank, :price, :companies
-  @date_listed
-  @date_apply_from
-  @date_apply_to
-
-  @code
-  @company_name
-  @rank
-  @price
-
-  @companies
-
-  def to_s
-    str = "#{@date_listed} #{@date_apply_from} #{@date_apply_to} #{@rank} #{@code} #{@company_name} #{@price}"
-    if not @companies.nil?
-      @companies.each do |company|
-        str << "\n  #{company}"
-      end
-    end
-
-    return str
-  end
-end
