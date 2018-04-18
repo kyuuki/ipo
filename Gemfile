@@ -58,3 +58,5 @@ gem 'devise'
 gem 'mechanize'
 gem 'nokogiri'
 
+gem 'slack-notifier'
+

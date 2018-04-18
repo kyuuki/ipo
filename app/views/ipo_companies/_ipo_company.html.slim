@@ -8,7 +8,7 @@ tr
   td = ipo_company.apply_to
   td
     - ipo_company.handlings.each do |handling|
-      span.badge.badge-primary = handling.stock_company.name
+      span.badge.badge-primary = handling.stock_company.short_name
       | &nbsp;
   td
     - Application.where(user: current_user, ipo_company: ipo_company).each do |application|
