@@ -53,10 +53,16 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'slim-rails'
 
+# ログイン
 gem 'devise'
 
+# SEO
+gem 'sitemap_generator'
+gem 'meta-tags'
+
+# スクレイピング
 gem 'mechanize'
 gem 'nokogiri'
 
+# 通知
 gem 'slack-notifier'
-
