@@ -76,5 +76,35 @@ class IpoCompany < ApplicationRecord
       end
     end
   end
+
+  # スクレイピングしてデータを更新 3
+  def self.update_3
+    ipo_data_list = IpoData::scrape_3(Rails.application.secrets.url_ipo_data_3)
+
+    # データ保存
+    ipo_data_list.each do |ipo|
+      ipo_company = IpoCompany.find_by(code: ipo.code)
+      # 現状は既存のデータの価格と評価データを入れ替えるだけ
+      # 評価データは 10 段階は扱いづらいので S, A, B, C, D に
+      case ipo.rank.to_i
+      when 1..5
+        ipo.rank = 'D'
+      when 6
+        ipo.rank = 'C'
+      when 7..8
+        ipo.rank = 'B'
+      when 9
+        ipo.rank = 'A'
+      when 10
+        ipo.rank = 'S'
+      end
+
+      if not ipo_company.nil?
+        ipo_company.update(
+          price: ipo.price,
+          rank: ipo.rank)
+      end
+    end
+  end
 end
 

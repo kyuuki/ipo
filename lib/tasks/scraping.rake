@@ -22,5 +22,17 @@ namespace :scraping do
 
     IpoCompany::update_2
   end
+
+  desc "Scraping update_3"
+  task :update_3 => :environment do
+    puts "Start scraping 3."
+
+    # TODO: サービス化
+    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url,
+                                   channel: "#random", username: "ipo-rails")
+    notifier.ping "Start scraping 3."
+
+    IpoCompany::update_3
+  end
 end
 
