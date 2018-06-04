@@ -14,9 +14,15 @@ class IpoCompany < ApplicationRecord
     ipo_data_list = ScrapingSite1Service::call
 
     ipo_data_list.each do |ipo|
+      # ipo: スクレイピングしてきたデータ
+      # ipo_company: DB に登録した IPO 会社 (案件)
+
       ipo_company_list = IpoCompany.where(code: ipo.code)
       ipo_company = nil
       if ipo_company_list.size == 0
+        #
+        # IPO 会社追加
+        #
         ipo_company = IpoCompany.create(
           code: ipo.code,
           name: ipo.company_name,
@@ -31,6 +37,9 @@ class IpoCompany < ApplicationRecord
         ipo_company = ipo_company_list[0]
       end
 
+      #
+      # 取扱証券の更新
+      #
       ipo.companies.each do |c|
         #stock_company_list = StockCompany.where(name: c)
         # TODO: 部品化
@@ -53,6 +62,24 @@ class IpoCompany < ApplicationRecord
         handling = Handling.find_by(ipo_company: ipo_company, stock_company: stock_company)
         if handling.nil?
           Handling.create(ipo_company: ipo_company, stock_company: stock_company)
+        end
+      end
+
+      #
+      # 申込の更新
+      #
+      # ipo_company の取扱証券会社の口座から申込を作成
+      # TODO: 消えた場合
+      ipo_company.handlings.each do |handling|
+        stock_company = handling.stock_company
+        # 取扱証券会社に関する全口座を洗い出し
+        Account.where(stock_company: stock_company).each do |account|
+          # 申込状況を追加
+          # TODO: applications の user が余計だ。
+          application = Application.find_by(ipo_company: ipo_company, account: account)
+          if application.nil?
+            Application.create(user: account.user, ipo_company: ipo_company, account: account, amount: 0, applied: false)
+          end
         end
       end
     end
