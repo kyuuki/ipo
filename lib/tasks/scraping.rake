@@ -1,4 +1,11 @@
 namespace :scraping do
+  desc "Scraping Site 1"
+  task :site_1 => :environment do
+    puts "Start scraping site 1."
+
+    ScrapingSite1Service::call
+  end
+
   desc "Scraping update_1"
   task :update_1 => :environment do
     puts "Start scraping 1."

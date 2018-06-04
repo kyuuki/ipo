@@ -10,7 +10,8 @@ class IpoCompany < ApplicationRecord
     notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url, 
                                    channel: "#random", username: "ipo-rails")
 
-    ipo_data_list = IpoData::scrape_1(Rails.application.secrets.url_ipo_data_1)
+    #ipo_data_list = IpoData::scrape_1(Rails.application.secrets.url_ipo_data_1)
+    ipo_data_list = ScrapingSite1Service::call
 
     ipo_data_list.each do |ipo|
       ipo_company_list = IpoCompany.where(code: ipo.code)
