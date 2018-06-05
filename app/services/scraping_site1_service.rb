@@ -106,6 +106,12 @@ class ScrapingSite1Service
     ipo.price = str.to_i
 
     # 仮条件カラム処理
+    str = tr_body.xpath("td[6]").text
+    str = str.gsub(/\s+/, "")
+    str = str.gsub(/,/, "")
+    str = str.gsub(/円/, "")
+    dev_null, price = str.split("～").map { |s| s.to_i }
+    ipo.price = price if (not price.nil?) and (price > 0)
 
     # 公募価格カラム処理
     str = tr_body.xpath("td[7]").text

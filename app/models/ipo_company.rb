@@ -6,11 +6,6 @@ class IpoCompany < ApplicationRecord
 
   # スクレイピングしてデータを更新 1
   def self.update_1
-    # TODO: サービス化
-    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url, 
-                                   channel: "#random", username: "ipo-rails")
-
-    #ipo_data_list = IpoData::scrape_1(Rails.application.secrets.url_ipo_data_1)
     ipo_data_list = ScrapingSite1Service::call
 
     ipo_data_list.each do |ipo|
@@ -31,10 +26,22 @@ class IpoCompany < ApplicationRecord
           listed_at: ipo.date_listed,
           apply_from: ipo.date_apply_from,
           apply_to: ipo.date_apply_to)
-        #notifier.ping("IPO 案件が追加されました. #{ipo_company.name}")
+
+        SlackNotifier.notify("IPO 案件が追加されました. #{ipo_company.name}")
       else
-        # TODO: データがあるときはアップデート
         ipo_company = ipo_company_list[0]
+
+        # 価格に変更があるときはアップデート
+        if ipo_company.price != ipo.price
+          old_price = ipo_company.price
+          ipo_company.update(price: ipo.price)
+
+          message = "価格が変更されました. #{ipo_company.name}: #{old_price} ---> #{ipo.price}"
+          puts message
+          SlackNotifier.notify(message)
+        end
+
+        # TODO: ランクも更新はどうしよう？
       end
 
       #
@@ -53,8 +60,9 @@ class IpoCompany < ApplicationRecord
         end
 
         if stock_company.nil?
-          puts "#{c} にマッチする証券会社がありません."
-          notifier.ping "#{c} にマッチする証券会社がありません."
+          message = "#{c} にマッチする証券会社がありません."
+          puts message
+          SlackNotifier.notify(message)
           #stock_company = StockCompany.create(name: c)
         end
 
@@ -62,6 +70,8 @@ class IpoCompany < ApplicationRecord
         handling = Handling.find_by(ipo_company: ipo_company, stock_company: stock_company)
         if handling.nil?
           Handling.create(ipo_company: ipo_company, stock_company: stock_company)
+          message = "取扱証券会社が追加されました. #{ipo_company.name}: #{stock_company.name}"
+          SlackNotifier.notify(message)
         end
       end
 
