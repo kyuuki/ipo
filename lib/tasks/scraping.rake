@@ -1,43 +1,37 @@
 namespace :scraping do
-  desc "Scraping Site 1"
+  desc "Scrape site 1"
   task :site_1 => :environment do
     puts "Start scraping site 1."
 
     ScrapingSite1Service::call
   end
 
-  desc "Scraping update_1"
+  desc "Scrape site 1 and update db"
   task :update_1 => :environment do
-    puts "Start scraping 1."
+    message = "Task scraping:update_1 start."
 
-    # TODO: サービス化
-    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url,
-                                   channel: "#random", username: "ipo-rails")
-    notifier.ping "Start scraping 1."
+    puts message
+    SlackNotifier.notify(message)
 
     IpoCompany::update_1
   end
 
-  desc "Scraping update_2"
+  desc "Scrape site 2 and update db"
   task :update_2 => :environment do
-    puts "Start scraping 2."
+    message = "Task scraping:update_2 start."
 
-    # TODO: サービス化
-    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url,
-                                   channel: "#random", username: "ipo-rails")
-    notifier.ping "Start scraping 2."
+    puts message
+    SlackNotifier.notify(message)
 
     IpoCompany::update_2
   end
 
-  desc "Scraping update_3"
+  desc "Scrape site 3 and update db"
   task :update_3 => :environment do
-    puts "Start scraping 3."
+    message = "Task scraping:update_3 start."
 
-    # TODO: サービス化
-    notifier = Slack::Notifier.new(Rails.application.secrets.slack_webhook_url,
-                                   channel: "#random", username: "ipo-rails")
-    notifier.ping "Start scraping 3."
+    puts message
+    SlackNotifier.notify(message)
 
     IpoCompany::update_3
   end
