@@ -1,22 +1,23 @@
 .row.mt-3
-  table.table.table-bordered.table-striped
+  table.table.table-bordered.table-striped.table-responsive
     thead.thead-dark
       tr
         th コード
         th 名前
         th
-        th 価格
-        th 公開日
-        th
+        th.d-none.d-sm-table-cell
           | 申込
           br
           | 開始
-        th
+        th.d-none.d-sm-table-cell
           | 申込
           br
           | 終了
-        th 取扱証券
-        th 口座
+        th 公開日
+        th 価格
+        th.d-none.d-sm-table-cell 取扱証券
+        - if user_signed_in?
+          th 口座
     tbody
       = render @ipo_companies
 

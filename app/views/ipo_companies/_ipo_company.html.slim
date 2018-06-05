@@ -2,21 +2,22 @@ tr
   td = ipo_company.code
   td = ipo_company.name
   td = ipo_company.rank
-  td.text-right = number_with_delimiter(ipo_company.price)
+  td.d-none.d-sm-table-cell = ipo_company.apply_from
+  td.d-none.d-sm-table-cell = ipo_company.apply_to
   td = ipo_company.listed_at
-  td = ipo_company.apply_from
-  td = ipo_company.apply_to
-  td
-    - ipo_company.handlings.each do |handling|
+  td.text-right = number_with_delimiter(ipo_company.price)
+  td.d-none.d-sm-table-cell
+    - ipo_company.handlings.order(:stock_company_id).each do |handling|
       span.badge.badge-primary = handling.stock_company.short_name
       | &nbsp;
-  td
-    - Application.where(user: current_user, ipo_company: ipo_company).each do |application|
-      - if application.applied
-        = link_to application.account.name, edit_application_path(application), { class: "badge badge-success" }
-      - else
-        = link_to application.account.name, edit_application_path(application), { class: "badge badge-danger" }
-      | &nbsp;
+  - if user_signed_in?
+    td
+      - Application.where(user: current_user, ipo_company: ipo_company).order(:account_id).each do |application|
+        - if application.applied
+          = link_to application.account.name, edit_application_path(application), { class: "badge badge-success" }
+        - else
+          = link_to application.account.name, edit_application_path(application), { class: "badge badge-danger" }
+        | &nbsp;
 
   / td = link_to '詳細', ipo_company
   / td = link_to '編集', edit_ipo_company_path(ipo_company)
