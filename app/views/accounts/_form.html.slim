@@ -6,10 +6,14 @@
         - @account.errors.full_messages.each do |message|
           li = message
 
-  .field
-    = f.label :stock_company
-    = f.collection_select :stock_company_id, StockCompany.all, :id, :name
-  .field
-    = f.label :name
-    = f.text_field :name
-  .actions = f.submit
+  .form-group.row
+    = f.label :stock_company, class: "col-sm-2 col-form-label"
+    .col-sm-6
+      = f.collection_select :stock_company_id, StockCompany.all, :id, :name, {}, { class: "form-control" }
+  .form-group.row
+    = f.label :name, class: "col-sm-2 col-form-label"
+    .col-sm-6
+      = f.text_field :name, class: "form-control"
+  .form-group.row
+    .col-sm-10.offset-sm-2
+      .actions = f.submit class: "btn btn-danger"

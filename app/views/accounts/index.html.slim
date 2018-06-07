@@ -1,22 +1,31 @@
-h2 口座一覧
+h2.h4.my-3 口座一覧
 
 .row
-  table.table
-    thead
-      tr
-        th 口座名
-        th 証券会社
-        th
-        th
-        th
+  .col-12
+    .card.mb-3
+      .card-body
+        | お持ちの口座を登録してください。
+        br
+        | 1 つの証券会社に複数の口座（家族の口座など）をお持ちの方は全て登録してください。
 
-    tbody
-      - @accounts.each do |account|
+  .col-12
+    table.table.table-bordered.table-striped
+      thead
         tr
-          td = account.name
-          td = account.stock_company.name
-          td = link_to 'Show', account
-          td = link_to 'Edit', edit_account_path(account)
-          td = link_to 'Destroy', account, data: { confirm: 'Are you sure?' }, method: :delete
+          th 口座名
+          th 証券会社
+          th
 
-  = link_to 'New Account', new_account_path
+      tbody
+        - @accounts.each do |account|
+          tr
+            td = account.name
+            td = account.stock_company.name
+            td
+              //= link_to '申込実績', account
+              //| &nbsp;
+              = link_to '編集', edit_account_path(account), class: "btn btn-sm btn-success"
+              | &nbsp;
+              = link_to '削除', account, class: "btn btn-sm btn-danger", data: { confirm: 'Are you sure?' }, method: :delete
+
+    = link_to '口座登録', new_account_path, class: "btn btn-success"
