@@ -2,6 +2,15 @@ class Account < ApplicationRecord
   belongs_to :user
   belongs_to :stock_company
 
+  has_many :applications, dependent: :destroy
+
+  validates :user,
+    presence: true
+  validates :stock_company,
+    presence: true
+  validates :name,
+    presence: true
+
   # 申込を追加する
   def update_applications(user)
     IpoCompany.all.each do |ipo_company|

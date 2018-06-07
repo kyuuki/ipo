@@ -9,11 +9,15 @@ ja:
           has_many: "%{record}が存在しているので削除できません"
     models:
       user: ユーザー
+      account: 口座
     attributes:
       user:
         email: メールアドレス
         password: パスワード
         remember_me: 次回から自動的にログイン
+      account:
+        stock_company: 証券会社
+        name: 口座名
   date:
     abbr_day_names:
     - 日

@@ -7,11 +7,11 @@
           li = message
 
   .form-group.row
-    = f.label :stock_company, class: "col-sm-2 col-form-label"
+    = f.label :stock_company, class: "col-sm-2 col-form-label text-right"
     .col-sm-6
       = f.collection_select :stock_company_id, StockCompany.all, :id, :name, {}, { class: "form-control" }
   .form-group.row
-    = f.label :name, class: "col-sm-2 col-form-label"
+    = f.label :name, class: "col-sm-2 col-form-label text-right"
     .col-sm-6
       = f.text_field :name, class: "form-control"
   .form-group.row

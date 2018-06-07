@@ -26,6 +26,6 @@ h2.h4.my-3 口座一覧
               //| &nbsp;
               = link_to '編集', edit_account_path(account), class: "btn btn-sm btn-success"
               | &nbsp;
-              = link_to '削除', account, class: "btn btn-sm btn-danger", data: { confirm: 'Are you sure?' }, method: :delete
+              = link_to '削除', account, class: "btn btn-sm btn-danger", data: { confirm: '削除してもいいですか？' }, method: :delete
 
     = link_to '口座登録', new_account_path, class: "btn btn-success"
