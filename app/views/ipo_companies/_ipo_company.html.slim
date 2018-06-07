@@ -1,10 +1,13 @@
-tr
+tr class=("table-dark" if (ipo_company.listed_at < Date.today))
   td = ipo_company.code
   td = ipo_company.name
   td = ipo_company.rank
-  td.d-none.d-sm-table-cell = ipo_company.apply_from
-  td.d-none.d-sm-table-cell = ipo_company.apply_to
-  td = ipo_company.listed_at
+  td.d-none.d-sm-table-cell class=("bg-danger" if (ipo_company.apply_from == Date.today)) class=("bg-primary" if ipo_company.apply_active?)
+    = ipo_company.apply_from
+  td.d-none.d-sm-table-cell class=("bg-danger" if (ipo_company.apply_to == Date.today)) class=("bg-primary" if ipo_company.apply_active?)
+    = ipo_company.apply_to
+  td class=("bg-danger" if (ipo_company.listed_at == Date.today))
+    = ipo_company.listed_at
   td.text-right = number_with_delimiter(ipo_company.price)
   td.d-none.d-sm-table-cell
     - ipo_company.handlings.order(:stock_company_id).each do |handling|

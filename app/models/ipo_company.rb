@@ -4,6 +4,12 @@ require 'nokogiri'
 class IpoCompany < ApplicationRecord
   has_many :handlings
 
+  # 申込期間中？
+  def apply_active?
+    today = Date.today  # TODO: 本当は 1 リクエストで固定する必要あり
+    (apply_from <= today) and (today <= apply_to)
+  end
+
   # スクレイピングしてデータを更新 1
   def self.update_1
     ipo_data_list = ScrapingSite1Service::call
