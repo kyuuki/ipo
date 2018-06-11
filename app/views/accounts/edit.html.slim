@@ -11,11 +11,11 @@ h2.h4.my-3 口座編集
           li = message
 
   .form-group.row
-    = f.label :stock_company, class: "col-sm-2 col-form-label text-right"
+    = f.label :stock_company, class: "col-sm-2 col-form-label"
     .col-sm-6
       = f.text_field :stock_company, class: "form-control-plaintext", value: @account.stock_company.name
   .form-group.row
-    = f.label :name, class: "col-sm-2 col-form-label text-right"
+    = f.label :name, class: "col-sm-2 col-form-label"
     .col-sm-6
       = f.text_field :name, class: "form-control"
   .form-group.row
