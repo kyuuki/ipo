@@ -15,7 +15,7 @@ tr class=("table-dark" if (ipo_company.listed_at < Date.today))
       | &nbsp;
   - if user_signed_in?
     td
-      - Application.where(user: current_user, ipo_company: ipo_company).order(:account_id).each do |application|
+      - Application.by_user(current_user).where(ipo_company: ipo_company).order(:account_id).each do |application|
         - if application.applied
           = link_to application.account.name, edit_application_path(application), { class: "badge badge-success" }
         - else

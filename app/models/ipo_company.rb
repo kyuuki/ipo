@@ -91,10 +91,9 @@ class IpoCompany < ApplicationRecord
         # 取扱証券会社に関する全口座を洗い出し
         Account.where(stock_company: stock_company).each do |account|
           # 申込状況を追加
-          # TODO: applications の user が余計だ。
           application = Application.find_by(ipo_company: ipo_company, account: account)
           if application.nil?
-            Application.create(user: account.user, ipo_company: ipo_company, account: account, amount: 0, applied: false)
+            Application.create(ipo_company: ipo_company, account: account, amount: 0, applied: false)
           end
         end
       end
