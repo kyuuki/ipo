@@ -102,21 +102,37 @@ class IpoCompany < ApplicationRecord
 
   # スクレイピングしてデータを更新 2
   def self.update_2
-    ipo_data_list = IpoData::scrape_2(Rails.application.secrets.url_ipo_data_2)
+    ipo_data_list = ScrapingSite2Service::call
 
     # データ保存
     ipo_data_list.each do |ipo|
       ipo_company = IpoCompany.find_by(code: ipo.code)
+
+      #
+      # IPO 会社追加
+      #
       if ipo_company.nil?
         ipo_company = IpoCompany.create(
           code: ipo.code,
           name: ipo.company_name,
           rank: ipo.rank,
-          #price: ipo.price,
+          price: ipo.price,
           listed_at: ipo.date_listed,
           apply_from: ipo.date_apply_from,
           apply_to: ipo.date_apply_to)
+
+        SlackNotifier.notify("IPO 案件が追加されました. #{ipo_company.name}")
       end
+
+      #
+      # 取扱証券の更新
+      #
+      ipo_company.update_handlings(ipo.companies)
+
+      #
+      # 申込の更新
+      #
+      ipo_company.update_application
     end
   end
 
@@ -146,6 +162,60 @@ class IpoCompany < ApplicationRecord
         ipo_company.update(
           price: ipo.price,
           rank: ipo.rank)
+      end
+    end
+  end
+
+  #
+  # 証券会社の文字列リストを元に handlings を更新
+  #
+  def update_handlings(stock_company_str_list)
+    stock_company_str_list.each do |stock_company_str|
+      # TODO: 部品化
+      stock_company = nil
+      StockCompany.all.each do |sc|
+        match = Regexp.new(sc.regexp).match(stock_company_str)
+        if not match.nil?
+          stock_company = sc
+          break
+        end
+      end
+
+      if stock_company.nil?
+        message = "#{stock_company_str} にマッチする証券会社がありません."
+        puts message
+        #SlackNotifier.notify(message)
+        #stock_company = StockCompany.create(name: c)
+
+        next
+      end
+
+      # TODO: なくなっていても削除しない。追加のみ
+      handling = Handling.find_by(ipo_company: self, stock_company: stock_company)
+      if handling.nil?
+        Handling.create(ipo_company: self, stock_company: stock_company)
+        message = "取扱証券会社が追加されました. #{self.name}: #{stock_company.name}"
+        SlackNotifier.notify(message)
+      end
+    end
+  end
+
+  #
+  # 申込の更新
+  #
+  # ipo_company の取扱証券会社の口座から申込を作成
+  # TODO: 消えた場合
+  # TODO: 変更のあった取扱商圏のみ更新
+  def update_application
+    self.handlings.each do |handling|
+      stock_company = handling.stock_company
+      # 取扱証券会社に関する全口座を洗い出し
+      Account.where(stock_company: stock_company).each do |account|
+        # 申込状況を追加
+        application = Application.find_by(ipo_company: self, account: account)
+        if application.nil?
+          Application.create(ipo_company: self, account: account, amount: 0, applied: false)
+        end
       end
     end
   end
