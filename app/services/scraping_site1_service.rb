@@ -81,11 +81,8 @@ class ScrapingSite1Service
 
     ipo = IpoData.new
 
-    # 上場日カラム処理
-    ipo.date_listed = Date.parse(tr_head.xpath("td[1]").text)
-
     # 企業名カラム処理
-    str = tr_head.xpath("td[2]").text
+    str = tr_head.xpath("td[1]").text
     str = str.gsub(/\s+/, "")
     str = str.tr("（）", "()")  # たまに全角ある。。。
     ipo.company_name = str.gsub(/\((.+)\)/, "")
@@ -99,14 +96,24 @@ class ScrapingSite1Service
     str = str.gsub(/\s+/, "")
     ipo.date_apply_from, ipo.date_apply_to = str.split("～").map { |s| Date.parse(s) }
 
+    # 上場日カラム処理
+    begin
+      ipo.date_listed = Date.parse(tr_body.xpath("td[4]").text)
+    rescue => e
+      Rails.logger.error("date_listed Date parse error.")
+      Rails.logger.error("Tr = #{tr_body}.")
+
+      raise e
+    end
+
     # 想定価格カラム処理
-    str = tr_body.xpath("td[5]").text
+    str = tr_body.xpath("td[6]").text
     str = str.gsub(/,/, "")
     str = str.gsub(/円/, "")
     ipo.price = str.to_i
 
     # 仮条件カラム処理
-    str = tr_body.xpath("td[6]").text
+    str = tr_body.xpath("td[7]").text
     str = str.gsub(/\s+/, "")
     str = str.gsub(/,/, "")
     str = str.gsub(/円/, "")
@@ -114,13 +121,13 @@ class ScrapingSite1Service
     ipo.price = price if (not price.nil?) and (price > 0)
 
     # 公募価格カラム処理
-    str = tr_body.xpath("td[7]").text
+    str = tr_body.xpath("td[8]").text
     str = str.gsub(/,/, "")
     str = str.gsub(/円/, "")
     ipo.price = str.to_i if not str.to_i == 0
 
     # 狙い目証券カラム処理
-    str = tr_body.xpath("td[10]").text.strip
+    str = tr_body.xpath("td[11]").text.strip
     array_str = str.split(/\s+/)
     ipo.companies = array_str.map { |s| s.gsub(/（.*）/, "") }
 
