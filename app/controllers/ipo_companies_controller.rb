@@ -4,7 +4,7 @@ class IpoCompaniesController < ApplicationController
   # GET /ipo_companies
   # GET /ipo_companies.json
   def index
-    @ipo_companies = IpoCompany.all.order(listed_at: :desc).order(id: :desc)
+    @ipo_companies = IpoCompany.all.order(apply_from: :desc).order(apply_to: :desc).order(listed_at: :desc).order(id: :desc)
   end
 
   # GET /ipo_companies/1
