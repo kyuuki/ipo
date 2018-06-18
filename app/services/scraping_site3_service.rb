@@ -40,7 +40,12 @@ class ScrapingSite3Service
 
     # 評価カラム処理
     str = tr.xpath("td[7]").text
-    ipo.rank = str.match(/\((.+)\)/)[1]
+    matchData = str.match(/\((.+)\)/)
+    if not matchData.nil?
+      ipo.rank = matchData[1]
+    else
+      ipo.rank = 0  # まだ評価がついていない
+    end
 
     # 公募カラム処理
     str = tr.xpath("td[8]").text

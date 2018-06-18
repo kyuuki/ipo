@@ -146,6 +146,8 @@ class IpoCompany < ApplicationRecord
       # 現状は既存の評価データを入れ替えるだけ
       # 評価データは 10 段階は扱いづらいので S, A, B, C, D に
       case ipo.rank.to_i
+      when 0
+        ipo.rank = '-'
       when 1..5
         ipo.rank = 'D'
       when 6
