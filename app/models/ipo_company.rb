@@ -122,6 +122,16 @@ class IpoCompany < ApplicationRecord
           apply_to: ipo.date_apply_to)
 
         SlackNotifier.notify("IPO 案件が追加されました. #{ipo_company.name}")
+      else
+        # 価格に変更があるときはアップデート
+        if ipo_company.price != ipo.price
+          old_price = ipo_company.price
+          ipo_company.update(price: ipo.price)
+
+          message = "価格が変更されました. #{ipo_company.name}: #{old_price} ---> #{ipo.price}"
+          puts message
+          SlackNotifier.notify(message)
+        end
       end
 
       #
