@@ -8,7 +8,7 @@ require 'nokogiri'
 
 class IpoData
   attr_accessor :code, :company_name, :rank, :price, :companies,
-                :date_listed, :date_apply_from, :date_apply_to
+                :date_listed, :date_apply_from, :date_apply_to, :date_drawing
 
   def initialize
     @code
@@ -19,12 +19,13 @@ class IpoData
     @date_listed
     @date_apply_from
     @date_apply_to
+    @date_drawing
 
     @companies = []
   end
 
   def to_s
-    str = "#{@date_listed} #{@date_apply_from} #{@date_apply_to} #{@rank} #{@code} #{@company_name} #{@price}"
+    str = "#{@date_listed} #{@date_apply_from} #{@date_apply_to} #{@date_drawing} #{@rank} #{@code} #{@company_name} #{@price}"
     @companies.each do |company|
         str << "\n  #{company}"
     end

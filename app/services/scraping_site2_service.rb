@@ -86,6 +86,8 @@ class ScrapingSite2Service
         ipo.companies << parse_tr_main_kanji(tr)
       elsif tr.xpath("th").text.match(/引受幹事/)
         ipo.companies.concat(parse_tr_sub_kanji(tr))
+      elsif tr.xpath("th").text.match(/公募価格決定/)
+        ipo.date_drawing = self.parse_tr_drawing_at(tr)
       end
     end
   end
@@ -102,5 +104,12 @@ class ScrapingSite2Service
   #
   def self.parse_tr_sub_kanji(tr)
     return tr.xpath("td").text.split(/\s+/)
+  end
+
+  #
+  # 詳細ページ - tr (公募価格決定日) 処理
+  #
+  def self.parse_tr_drawing_at(tr)
+    return Date.parse(tr.xpath("td").text)
   end
 end
