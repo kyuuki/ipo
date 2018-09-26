@@ -19,6 +19,10 @@ class ApplicationsController < ApplicationController
 
   # GET /applications/1/edit
   def edit
+    # デフォルトで株数を 100 にする (入力補助のためなので、新規登録時は 0 のままにする)
+    if @application.amount == 0
+      @application.amount = 100
+    end
   end
 
   # POST /applications
