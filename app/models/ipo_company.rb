@@ -53,33 +53,7 @@ class IpoCompany < ApplicationRecord
       #
       # 取扱証券の更新
       #
-      ipo.companies.each do |c|
-        #stock_company_list = StockCompany.where(name: c)
-        # TODO: 部品化
-        stock_company = nil
-        StockCompany.all.each do |sc|
-          match = Regexp.new(sc.regexp).match(c)
-          if not match.nil?
-            stock_company = sc
-            break
-          end
-        end
-
-        if stock_company.nil?
-          message = "#{c} にマッチする証券会社がありません."
-          puts message
-          SlackNotifier.notify(message)
-          #stock_company = StockCompany.create(name: c)
-        end
-
-        # TODO: なくなっていても削除しない。追加のみ
-        handling = Handling.find_by(ipo_company: ipo_company, stock_company: stock_company)
-        if handling.nil?
-          Handling.create(ipo_company: ipo_company, stock_company: stock_company)
-          message = "取扱証券会社が追加されました. #{ipo_company.name}: #{stock_company.name}"
-          SlackNotifier.notify(message)
-        end
-      end
+      ipo_company.update_handlings(ipo.companies)
 
       #
       # 申込の更新
@@ -133,7 +107,7 @@ class IpoCompany < ApplicationRecord
           puts message
           SlackNotifier.notify(message)
         end
-        
+
         # 現状、当選日は site 2 のみ
         if ipo_company.drawing_at.nil?
           ipo_company.update(drawing_at: ipo.date_drawing)

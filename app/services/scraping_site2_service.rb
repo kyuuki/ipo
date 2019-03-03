@@ -110,6 +110,9 @@ class ScrapingSite2Service
   # 詳細ページ - tr (公募価格決定日) 処理
   #
   def self.parse_tr_drawing_at(tr)
-    return Date.parse(tr.xpath("td").text)
+    t = tr.xpath("td").text  # "n月m日"
+    month, day = t.scan(/([0-9]+)月([0-9]+)日/)[0]
+    d = Date.parse("#{month}/#{day}")  # TODO: 年またぎでおかしくなる
+    return d
   end
 end

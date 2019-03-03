@@ -19,4 +19,5 @@ StockCompany.find_or_create_by(name: "岩井コスモ証券", short_name: "岩�
 StockCompany.find_or_create_by(name: "むさし証券", short_name: "むさし", regexp: "^むさし")
 StockCompany.find_or_create_by(name: "松井証券", short_name: "松井", regexp: "^松井")
 StockCompany.find_or_create_by(name: "野村証券", short_name: "野村", regexp: "^野村")
+StockCompany.find_or_create_by(name: "DMM.com 証券", short_name: "DMM", regexp: "^DMM")
 
