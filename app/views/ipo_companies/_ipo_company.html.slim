@@ -14,7 +14,7 @@ tr class=("table-dark" if (ipo_company.listed_at < Date.today))
   td.d-none.d-sm-table-cell
     - ipo_company.handlings.order(:stock_company_id).each do |handling|
       span.badge.badge-primary = handling.stock_company.short_name
-      | &nbsp;
+      | &nbsp; 
   - if user_signed_in?
     td
       - Application.by_user(current_user).where(ipo_company: ipo_company).order(:account_id).each do |application|
@@ -22,7 +22,7 @@ tr class=("table-dark" if (ipo_company.listed_at < Date.today))
           = link_to application.account.name, edit_application_path(application), { class: "badge badge-success" }
         - else
           = link_to application.account.name, edit_application_path(application), { class: "badge badge-danger" }
-        | &nbsp;
+        | &nbsp; 
 
   / td = link_to '詳細', ipo_company
   / td = link_to '編集', edit_ipo_company_path(ipo_company)
